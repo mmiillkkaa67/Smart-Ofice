@@ -1,0 +1,313 @@
+[
+    {
+        "id": "15648ed24277c1ef",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "76afc3d76f270abf",
+        "type": "comment",
+        "z": "15648ed24277c1ef",
+        "name": "WARNING: please check you have started this container with a volume that is mounted to /data\\n otherwise any flow changes are lost when you redeploy or upgrade the container\\n (e.g. upgrade to a more recent node-red docker image).\\n  If you are using named volumes you can ignore this warning.\\n Double click or see info side panel to learn how to start Node-RED in Docker to save your work",
+        "info": "\nTo start docker with a bind mount volume (-v option), for example:\n\n```\ndocker run -it -p 1880:1880 -v /home/user/node_red_data:/data --name mynodered nodered/node-red\n```\n\nwhere `/home/user/node_red_data` is a directory on your host machine where you want to store your flows.\n\nIf you do not do this then you can experiment and redploy flows, but if you restart or upgrade the container the flows will be disconnected and lost. \n\nThey will still exist in a hidden data volume, which can be recovered using standard docker techniques, but that is much more complex than just starting with a named volume as described above.",
+        "x": 350,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "3e12c39748599133",
+        "type": "inject",
+        "z": "15648ed24277c1ef",
+        "name": "TEMP-01 каждые 5 секунд ",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "5",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "24",
+        "payloadType": "num",
+        "x": 200,
+        "y": 200,
+        "wires": [
+            [
+                "511777184d23fdc3"
+            ]
+        ]
+    },
+    {
+        "id": "48706e1831ba73f0",
+        "type": "inject",
+        "z": "15648ed24277c1ef",
+        "name": "HUM-01 каждые 5 секунд",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "5",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "55",
+        "payloadType": "num",
+        "x": 200,
+        "y": 340,
+        "wires": [
+            [
+                "c833c3d0caf0039f"
+            ]
+        ]
+    },
+    {
+        "id": "511777184d23fdc3",
+        "type": "change",
+        "z": "15648ed24277c1ef",
+        "name": "Собрать сообщение TEMP-01",
+        "rules": [
+            {
+                "t": "set",
+                "p": "reading",
+                "pt": "msg",
+                "to": "{}",
+                "tot": "json"
+            },
+            {
+                "t": "set",
+                "p": "reading.value",
+                "pt": "msg",
+                "to": "payload",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "reading.sensor_id",
+                "pt": "msg",
+                "to": "TEMP-01",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "reading.zone",
+                "pt": "msg",
+                "to": "server_room",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "reading.timestamp",
+                "pt": "msg",
+                "to": "$millis()",
+                "tot": "jsonata"
+            },
+            {
+                "t": "set",
+                "p": "reading.unit",
+                "pt": "msg",
+                "to": "C",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "reading",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "headers",
+                "pt": "msg",
+                "to": "{\"Content-Type\":\"application/json\"}",
+                "tot": "json"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 510,
+        "y": 200,
+        "wires": [
+            [
+                "4723709d70c95c81",
+                "bf9b0977500c67f4"
+            ]
+        ]
+    },
+    {
+        "id": "c833c3d0caf0039f",
+        "type": "change",
+        "z": "15648ed24277c1ef",
+        "name": "Собрать сообщение HUM-01 ",
+        "rules": [
+            {
+                "t": "set",
+                "p": "reading",
+                "pt": "msg",
+                "to": "{}",
+                "tot": "json"
+            },
+            {
+                "t": "set",
+                "p": "reading.value",
+                "pt": "msg",
+                "to": "payload",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "reading.sensor_id",
+                "pt": "msg",
+                "to": "HUM-01",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "reading.zone",
+                "pt": "msg",
+                "to": "work_area",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "reading.timestamp",
+                "pt": "msg",
+                "to": "$millis()",
+                "tot": "jsonata"
+            },
+            {
+                "t": "set",
+                "p": "reading.unit",
+                "pt": "msg",
+                "to": "%",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "reading",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "headers",
+                "pt": "msg",
+                "to": "{\"Content-Type\":\"application/json\"}",
+                "tot": "json"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 510,
+        "y": 340,
+        "wires": [
+            [
+                "bf9b0977500c67f4",
+                "4723709d70c95c81"
+            ]
+        ]
+    },
+    {
+        "id": "bf9b0977500c67f4",
+        "type": "debug",
+        "z": "15648ed24277c1ef",
+        "name": "Отправляемый JSON",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 880,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "e5dd3067dc083c51",
+        "type": "debug",
+        "z": "15648ed24277c1ef",
+        "name": "Ответ CTRL - statusCode должен быть 200",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1210,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "4723709d70c95c81",
+        "type": "http request",
+        "z": "15648ed24277c1ef",
+        "name": "POST - CTRL - проверьте IP",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://192.168.20.3:8080/api/readings",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 860,
+        "y": 280,
+        "wires": [
+            [
+                "e5dd3067dc083c51"
+            ]
+        ]
+    },
+    {
+        "id": "460983e6f2bd540e",
+        "type": "catch",
+        "z": "15648ed24277c1ef",
+        "name": "Ошибки вкладки",
+        "scope": null,
+        "uncaught": false,
+        "x": 460,
+        "y": 460,
+        "wires": [
+            [
+                "82faf2312c184495"
+            ]
+        ]
+    },
+    {
+        "id": "82faf2312c184495",
+        "type": "debug",
+        "z": "15648ed24277c1ef",
+        "name": "Ошибка - раскрыть msg.error",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 750,
+        "y": 460,
+        "wires": []
+    }
+]
